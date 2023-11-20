@@ -1,0 +1,28 @@
+(* Problem. 1 *)
+3^100
+
+(* Problem. 2 *)
+3^1000
+
+(* Problem. 3 *)
+N[3^1000]
+
+(* Problem. 4 *)
+pi=N[Pi, 200]
+
+(* Problem. 5 *)
+Exp[Sqrt[163] * pi / 3]
+
+(* Problem. 6 *)
+pi=N[Pi,1000]; (*Get the first 1000 digits of Pi*)
+piString=ToString[pi]; (*Convert Pi to a string*)
+droppedString=StringDrop[piString,1]; (*Drop the leading 3*)
+position=StringPosition[piString,"999999"]; (*Find the position of "999999"*)
+position
+
+(* Problem. 7 *)
+Sin[13 * Pi]
+Log[2.1]
+Exp[I * Pi]
+
+(* Problem. 8 *)
