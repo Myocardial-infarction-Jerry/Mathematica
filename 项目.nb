@@ -1,0 +1,130 @@
+In[95]:=
+In[1]:=
+(* 定义学生类 *)
+Student[name_, id_, courses_] := Module[{},
+  <|"Name" -> name, "ID" -> id, "Courses" -> courses|>
+]
+
+(* 定义课程类 *)
+Course[name_, code_, instructor_] := Module[{},
+  <|"Name" -> name, "Code" -> code, "Instructor" -> instructor|>
+]
+
+(* 创建初始的学生和课程列表 *)
+students = {};
+courses = {};
+
+(* 定义插入学生函数 *)
+InsertStudent[name_, id_, courses_] := Module[{student},
+  student = Student[name, id, courses];
+  AppendTo[students, student];
+  Print["Student ", name, " inserted successfully."];
+]
+
+(* 定义插入课程函数 *)
+InsertCourse[name_, code_, instructor_] := Module[{course},
+  course = Course[name, code, instructor];
+  AppendTo[courses, course];
+  Print["Course ", name, " inserted successfully."];
+]
+
+(* 定义删除学生函数 *)
+DeleteStudent[id_] := Module[{index},
+  index = Position[students, student_ /; student["ID"] == id];
+  If[Length[index] == 0,
+    Print["Student with ID ", id, " not found."],
+    students = Delete[students, index[[1]]];
+    Print["Student with ID ", id, " deleted successfully."]
+  ]
+]
+
+(* 定义删除课程函数 *)
+DeleteCourse[code_] := Module[{index},
+  index = Position[courses, course_ /; course["Code"] == code];
+  If[Length[index] == 0,
+    Print["Course with code ", code, " not found."],
+    courses = Delete[courses, index[[1]]];
+    Print["Course with code ", code, " deleted successfully."]
+  ]
+]
+
+(* 定义函数来查找学生的课程列表 *)
+FindCoursesForStudent[studentID_] := Module[{student},
+  student = SelectFirst[students, #["ID"] == studentID &];
+  If[student === Missing["NotFound"],
+    Print["Student not found."],
+    Print["Courses for student ", student["Name"], ": ", student["Courses"]];
+  ]
+]
+
+(* 定义函数来查找课程的学生列表 *)
+FindStudentsForCourse[courseCode_] := Module[{course},
+  course = SelectFirst[courses, #["Code"] == courseCode &];
+  If[course === Missing["NotFound"],
+    Print["Course not found."],
+    Print["Students for course ", course["Name"], ": ",
+      Select[students, MemberQ[#, course["Code"]] &][All, "Name"]];
+  ]
+]
+
+(* 导入绘图库 *)
+Needs["GraphUtilities`"]
+
+(* 定义函数来绘制学生和课程的关系图 *)
+DrawGraph := Module[{edges, vertices},
+  edges = Flatten[Table[DirectedEdge[student["Name"], course["Name"]], {student, students}, {course, courses}]];
+  vertices = Union[Flatten[{students, courses}]];
+  GraphPlot[edges, VertexLabeling -> True, MultiedgeStyle -> True, ImageSize -> Medium]
+]
+
+(* 示例用法 *)
+InsertStudent["Alice", 1, {"CS101", "CS102"}] (* 插入学生 *)
+InsertStudent["Bob", 2, {"CS101", "CS103"}] (* 插入学生 *)
+InsertStudent["Charlie", 3, {"CS102", "CS103"}] (* 插入学生 *)
+InsertStudent["David", 4, {"CS101"}] (* 插入学生 *)
+
+InsertCourse["Introduction to Computer Science", "CS101", "Prof. Smith"] (* 插入课程 *)
+InsertCourse["Advanced Computer Science", "CS102", "Prof. Johnson"] (* 插入课程 *)
+InsertCourse["Data Science", "CS103", "Prof. Brown"] (* 插入课程 *)
+
+FindCoursesForStudent[1] (* 查找学生ID为1的课程列表 *)
+FindStudentsForCourse["CS101"] (* 查找课程代码为"CS101"的学生列表 *)
+
+(* 增加更多示例关系 *)
+InsertStudent["Eve", 5, {"CS102", "CS103"}] (* 插入学生 *)
+InsertStudent["Frank", 6, {"CS101", "CS102", "CS103"}] (* 插入学生 *)
+InsertCourse["Machine Learning", "CS104", "Prof. Davis"] (* 插入课程 *)
+InsertCourse["Database Management", "CS105", "Prof. Wilson"] (* 插入课程 *)
+
+FindCoursesForStudent[2] (* 查找学生ID为2的课程列表 *)
+FindStudentsForCourse["CS103"] (* 查找课程代码为"CS103"的学生列表 *)
+
+(* 绘制学生和课程的关系图 *)
+DrawGraph
+
+DeleteStudent[1] (* 删除学生ID为1的学生 *)
+DeleteCourse["CS101"] (* 删除课程代码为"CS101"的课程 *)
+FindCoursesForStudent[1] (* 再次查找学生ID为1的课程列表，确认学生已被删除 *)
+FindStudentsForCourse["CS101"] (* 再次查找课程代码为"CS101"的学生列表，确认课程已被删除 *)
+\:6B63\:5728\:8BA1\:7B97In[95]:= SetDelayed::write: In[1] 中的标签 In 被保护.
+Out[95]= $Failed
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student Alice inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student Bob inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student Charlie inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student David inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course Introduction to Computer Science inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course Advanced Computer Science inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course Data Science inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student not found.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Students for course Introduction to Computer Science: {}[All,Name]
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student Eve inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student Frank inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course Machine Learning inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course Database Management inserted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student not found.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Students for course Data Science: {}[All,Name]
+Out[151]= 
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student with ID 1 not found.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course with code CS101 deleted successfully.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Student not found.
+\:6B63\:5728\:8BA1\:7B97In[95]:= Course not found.
